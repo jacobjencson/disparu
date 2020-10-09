@@ -1,0 +1,5 @@
+#directories to ignore
+examples
+extras
+logs
+src/static/img/thumbnails
