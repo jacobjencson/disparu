@@ -1,0 +1,37 @@
+<!DOCTYPE html5>
+<html>
+<head>
+ <title>Disparu - Steward Observatory</title>
+ <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1> <b>DISPARU:</b> </h1>
+	  <h1> The Search for Failed Supernovae with Hubble </h1>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li><a href="{{ url_for('disparu_home') }}">Home</a></li>
+          <li><a href="{{ url_for('disparu_galaxies') }}">Galaxies</a></li>
+          <li><a href="{{ url_for('disparu_candidates') }}">Candidates</a></li>
+          <li><a href="{{ url_for('disparu_sources') }}">Sources</a></li>
+        </ul>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+
+{% block body %}
+{% endblock %}
+
+</body>
+</html>

@@ -16,7 +16,7 @@
 # set defaults: edit as you see fit
 # -
 today=$(date "+%Y%m%d")
-default_authorization="disparu:D1sparu_520"
+default_authorization="disparu:db_secret"
 default_database="disparu"
 default_directory="${PWD}"
 default_filename="psql.${default_database}.${today}.sql"

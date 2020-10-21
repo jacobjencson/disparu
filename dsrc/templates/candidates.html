@@ -1,0 +1,227 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+	<h1>Candidate Search</h1>
+	
+	    <!-- filter and sort section -->
+		<br>
+	    <div class="col-md-2">
+	      <form method="GET" action="/disparu/candidates">
+	        <div align="left">
+	          <button type="submit" class="btn btn-success">Select</button>
+	          <a href="/disparu/candidates" class="btn btn-warning">Reset</a>
+	        </div>
+			 
+			<br>
+	        <div class="form-group">
+	          <label for="sort_value">Show candidates for:</label>
+	        </div>
+			
+	        <div class="form-row">
+				<label for="gal_name">Galaxy:</label>
+				<select id="gal_name" name="gal_name" class="form-control form-control-sm" value="{{ request.args.gal_name }}">
+	              {% for ix in range(context.all_galaxies|count) %}
+				    <option value= {{"%s"|format(context.all_galaxies[ix].name)}} {% if request.args.gal_name==context.all_galaxies[ix].name %} selected {% endif %}>{{"%s"|format(context.all_galaxies[ix].name)}}</option>
+				  {% endfor %}
+				</select>
+	        </div>
+			
+	        <div class="form-row">
+				<label for="sub_obs_dates">Obs. date:</label>
+				<select id="sub_obs_dates" name="sub_obs_dates" class="form-control form-control-sm" value="{{ request.args.sub_obs_dates }}">
+	              {% for ix in range(context.gal_sub_dates|count) %}
+				    <option value= {{"%s"|format(context.gal_sub_dates[ix])}} {% if request.args.sub_obs_date==context.gal_sub_dates[ix] %} selected {% endif %}>{{"%s"|format(context.gal_sub_dates[ix])}}</option>
+				  {% endfor %}
+				</select>
+	        </div>
+			
+	        <div class="form-row">
+				<label for="sub_obs_dates">Sub. version:</label>
+				<select id="sub_version" name="sub_version" class="form-control form-control-sm" value="{{ request.args.sub_version }}">
+	              {% for ix in range(context.sub_versions|count) %}
+				    <option value= {{"%s"|format(context.sub_versions[ix].version)}} {% if request.args.sub_obs_date==context.sub_versions[ix].version %} selected {% endif %}>{{"%s"|format(context.sub_versions[ix].version)}}</option>
+				  {% endfor %}
+				</select>
+	        </div>
+			
+			<br>
+	        <div class="form-group">
+	          <label for="sort_value">Filters:</label>
+	        </div>
+			
+	        <div class="form-row">
+				<label for="ispos">Type of candidates to show:</label>
+				<select id="ispos" name="ispos" class="form-control form-control-sm" value="{{ request.args.ispos }}">
+	              <option value="True"           {% if request.args.ispos=='True' %}           selected {% endif %}>Pos</option>
+				  <option value="False"           {% if request.args.ispos=='False' %}           selected {% endif %}>Neg</option>
+				  <option value=""           {% if request.args.ispos=='' %}           selected {% endif %}>Both</option>
+				</select>
+	        </div>
+			
+	        <div class="form-row">
+		      	<label for="scorr_peak__gte"><font color="grey"></font> scorr_peak <font color="grey">&ge;</font></label>
+	            <input type="number" step="0.1" class="form-control form-control-sm" id="scorr_peak__gte" name="scorr_peak__gte" value="{{ request.args.scorr_peak__gte }}" placeholder="5.0" defualt="5.0">
+	        </div>
+			
+	        <div class="form-row">
+	            <input type="number" step="0.1" class="form-control form-control-sm" id="fwhm_image__gte" name="fwhm_image__gte" value="{{ request.args.fwhm_image__gte }}" placeholder="1.1">
+		      	<label for="fwhm_image__gte"><font color="grey">&le;</font> FWHM <font color="grey">&le;</font></label>
+	            <input type="number" step="0.1" class="form-control form-control-sm" id="fwhm_image__lte" name="fwhm_image__lte" value="{{ request.args.fwhm_image__lte }}" placeholder="3.2">
+	        </div>
+			
+	        <div class="form-row">
+		      	<label for="elongation__gte"><font color="grey"></font> Elongation <font color="grey">&le;</font></label>
+	            <input type="number" step="0.1" class="form-control form-control-sm" id="elongation__lte" name="elongation__lte" value="{{ request.args.elongation__lte }}" placeholder="1.4">
+	        </div>
+			
+	        <div class="form-row">
+		      	<label for="diff2sciflux__gte"><font color="grey"></font> diff2sciflux <font color="grey">&ge;</font></label>
+	            <input type="number" step="0.1" class="form-control form-control-sm" id="diff2sciflux__gte" name="diff2sciflux__gte" value="{{ request.args.diff2sciflux__gte }}" placeholder="0.5">
+	        </div>
+			
+			<br>
+	        <div class="form-group">
+	          <label for="sort_value">Sort By:</label>
+	          <select id="sort_value" name="sort_value" class="form-control form-control-sm" value="{{ request.args.sort_value }}">
+	            <option value="id"           {% if request.args.sort_value=='id' %}           selected {% endif %}>Candidate ID</option>
+	            <option value="ra"           {% if request.args.sort_value=='ra' %}           selected {% endif %}>RA (J2k&deg;)</option>
+	            <option value="dec"          {% if request.args.sort_value=='dec' %}          selected {% endif %}>Dec (J2k&deg;)</option>
+				<option value="snr"          {% if request.args.sort_value=='snr' %}          selected {% endif %}>S/N</option>
+				<option value="scorr_peak"   {% if request.args.sort_value=='scorr_peak' %}   selected {% endif %}>scorr_peak</option>
+				<option value="diff2sciflux" {% if request.args.sort_value=='diff2sciflux' %} selected {% endif %}>diff2sciflux</option>
+	          </select>
+			  <select id="sort_order" name="sort_order" class="form-control form-control-sm" value="{{ request.args.sort_order }}">
+				<option value="ascending"  {% if request.args.sort_order=='ascending' %}  selected {% endif %}>Ascending</option>
+	            <option value="descending" {% if request.args.sort_order=='descending' %} selected {% endif %}>Descending</option>
+	          </select>
+	        </div>
+			  
+			<br>
+	        <div align="left">
+	          <button type="submit" class="btn btn-success">Select</button>
+	          <a href="/disparu/candidates" class="btn btn-warning">Reset</a>
+	        </div>
+	      </form>
+	    </div>
+		<br>
+	    <!-- end of sort section -->
+
+    <div class="row">
+      <div class="col">
+        <div align="left">
+          {% if context.has_prev %}
+            <a href="/disparu/candidates?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
+          {% else %}
+            <a href="#" class="btn btn-outline-secondary disabled">Prev</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div align="center">
+          {{ context.total }} candidates(s) found. Showing page {{ page }} / {{ context.pages }}.
+        </div>
+      </div>
+      <div class="col">
+        <div align="right">
+          {% if context.has_next %}
+            <a href="/disparu/candidates?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
+          {% else %}
+            <a href="#" class="btn btn-outline-secondary disabled">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+		
+	<table class="table table-striped table-sm" >
+		<!-- Table Header -->
+		<thead>
+			<tr>
+				<th>Candidate</th>
+				<th>Archival</th>
+				<th>Reference</th>
+				<th>Difference</th>
+				<th>Info</th>
+
+			</tr>
+		</thead>
+		<!-- Table Header -->
+
+		<!-- Table Body -->
+		<tbody>
+			{% for ix in range(context.results|count) %}
+				<tr>
+					<td>
+						<b>ID:</b> {{"%i"|format(context.results[ix].id)}}<br>
+						<b>x pos:</b> {{"%.2f"|format(context.results[ix].xpos)}}, <b>y pos:</b> {{"%.2f"|format(context.results[ix].ypos)}}<br>
+						<b>R.A.:</b> {{"%.6f"|format(context.results[ix].ra)}}, <b>Decl.: </b>{{"%.5f"|format(context.results[ix].dec)}}<br>
+						<b>Known sources:</b><br>
+							{% for s_match in context.s_matches[ix] %}
+								{{"%s"|format(s_match)}}<br>
+							{% endfor %}
+					</td>
+					<td> 
+						<img src="{{ url_for('static', filename='img/thumbnails/')}}{{context.thumbnails[ix][0]}}" height="200" />
+					</td>
+					<td>
+						<img src="{{ url_for('static', filename='img/thumbnails/')}}{{context.thumbnails[ix][1]}}" height="200" />
+					</td>
+					<td>
+						<img src="{{ url_for('static', filename='img/thumbnails/')}}{{context.thumbnails[ix][2]}}" height="200" />
+					</td>
+					<td>
+						<b>ispos:</b> {{"%s"|format(context.results[ix].ispos)}}<br>
+						<b>S/N:</b> {{"%.1f"|format(context.results[ix].snr)}}<br>
+						<b>scorr_peak:</b> {{"%.2f"|format(context.results[ix].scorr_peak)}}<br>
+						<b>FWHM:</b> {{"%.2f"|format(context.results[ix].fwhm_image)}}<br>
+						<b>Elongation:</b> {{"%.2f"|format(context.results[ix].elongation)}}<br>
+						<b>diff2sciflux:</b> {{"%.2f"|format(context.results[ix].diff2sciflux)}}<br>
+						<br>
+			  	      	<form method="GET" action="/disparu/candidates/save/{{context.results[ix].id}}">
+				       	  <div class="form-row">
+							<label for="source_type"><b>Type:</b></label>
+							<select id="source_type" name="source_type" class="form-control form-control-sm" value="{{context.s_types[ix]}}">
+				              {% for type_ix in range(context.type_options|count) %}
+							    <option value= {{"%s"|format(context.type_options[type_ix])}} {% if context.s_types[ix]==context.type_options[type_ix] %} selected {% endif %}>{{"%s"|format(context.type_options[type_ix])}}</option>
+							  {% endfor %}
+							</select>
+				          </div>
+						  <br>
+			  	          <div align="left">
+			  	            <button type="submit" class="btn btn-success">Save Candidate</button>
+			  	          </div>
+						</form> 
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table> 
+	
+    <div class="row">
+      <div class="col">
+        <div align="left">
+          {% if context.has_prev %}
+            <a href="/disparu/candidates?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
+          {% else %}
+            <a href="#" class="btn btn-outline-secondary disabled">Prev</a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div align="center">
+          {{ context.total }} record(s) found. Showing page {{ page }} / {{ context.pages }}.
+        </div>
+      </div>
+      <div class="col">
+        <div align="right">
+          {% if context.has_next %}
+            <a href="/disparu/candidates?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
+          {% else %}
+            <a href="#" class="btn btn-outline-secondary disabled">Next</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

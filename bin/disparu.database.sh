@@ -16,7 +16,7 @@
 # default(s) - edit as required
 # -
 def_db_name="disparu"
-def_db_pass="D1sparu_520"
+def_db_pass="db_secret"
 def_db_host="localhost:5432"
 def_db_user="disparu"
 

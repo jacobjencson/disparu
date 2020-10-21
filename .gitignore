@@ -2,4 +2,15 @@
 examples
 extras
 logs
-src/static/img/thumbnails
+__pycache__/*
+dsrc/static/img/thumbnails
+dsrc/forms/__pycache__/*
+dsrc/__pycache__/*
+dsrc/models/__pycache__/*
+dsrc/utils/__pycache__/*
+
+# secret stuff
+bin/Disparu.sh
+bin/docker.sh
+etc/Disparu.sh
+dsrc/disparu_common.py

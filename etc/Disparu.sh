@@ -9,8 +9,8 @@ if [[ -z "${_user}" ]]; then
   export USERNAME="disparu"
 fi
 
-export DISPARU_HOME=${1:-${PWD}}
-export DISPARU_TYPE=${2:-"dev"}
+export DISPARU_HOME=${1:-/var/www/disparu}
+export DISPARU_TYPE=${2:-""}
 
 case ${DISPARU_TYPE} in
   dev*|DEV*)
@@ -29,7 +29,7 @@ case ${DISPARU_TYPE} in
     export DISPARU_APP_HOST="sassy.as.arizona.edu"
     export DISPARU_APP_PORT=80
     export DISPARU_APP_URL="https://${DISPARU_APP_HOST}/disparu"
-    export DISPARU_DB_HOST="sassy.as.arizona.edu"
+    export DISPARU_DB_HOST="localhost"
     ;;
 esac
 
@@ -46,13 +46,13 @@ export DISPARU_DB_PASS="D1sparu_520"
 export DISPARU_BIN=${DISPARU_HOME}/bin
 export DISPARU_ETC=${DISPARU_HOME}/etc
 export DISPARU_LOGS=${DISPARU_HOME}/logs
-export DISPARU_SRC=${DISPARU_HOME}/src
+export DISPARU_SRC=${DISPARU_HOME}/dsrc
 
 
 # +
 # data path(s)
 # -
-export DISPARU_DATA=/System/Volumes/Data/dataraid6/disparu:/dataraid6/ztf:/dataraid0/disparu
+export DISPARU_DATA=/dataraid6/disparu:/dataraid0/disparu
 
 
 # +
@@ -63,4 +63,4 @@ export PYTHONPATH=${DISPARU_HOME}:${DISPARU_SRC}
 # +
 # update ephemeris
 # -
-# python3 -c 'from src import *; get_iers()'
+# python3 -c 'from dsrc import *; get_iers()'
