@@ -349,8 +349,10 @@ def mjd_to_jd(mjd=math.nan):
 # function: get_hash()
 # -
 # noinspection PyBroadException,PyPep8
-def get_hash(seed=get_isot()):
+def get_hash(seed=''):
     """ return unique 64-character string """
+    if not isinstance(seed, str) or seed.strip() == '':
+        seed = get_isot()
     try:
         return hashlib.sha256(seed.encode('utf-8')).hexdigest()
     except:
