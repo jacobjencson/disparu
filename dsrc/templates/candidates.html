@@ -8,10 +8,10 @@
 	    <!-- filter and sort section -->
 		<br>
 	    <div class="col-md-2">
-	      <form method="GET" action="/disparu/candidates">
+	      <form method="GET" action="{{ url_for('disparu_candidates') }}">
 	        <div align="left">
 	          <button type="submit" class="btn btn-success">Select</button>
-	          <a href="/disparu/candidates" class="btn btn-warning">Reset</a>
+	          <a href="{{ url_for('disparu_candidates') }}" class="btn btn-warning">Reset</a>
 	        </div>
 			 
 			<br>
@@ -101,7 +101,7 @@
 			<br>
 	        <div align="left">
 	          <button type="submit" class="btn btn-success">Select</button>
-	          <a href="/disparu/candidates" class="btn btn-warning">Reset</a>
+	          <a href="{{ url_for('disparu_candidates') }}" class="btn btn-warning">Reset</a>
 	        </div>
 	      </form>
 	    </div>
@@ -112,7 +112,7 @@
       <div class="col">
         <div align="left">
           {% if context.has_prev %}
-            <a href="/disparu/candidates?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
+            <a href="{{ url_for('disparu_candidates') }}?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
           {% else %}
             <a href="#" class="btn btn-outline-secondary disabled">Prev</a>
           {% endif %}
@@ -126,7 +126,7 @@
       <div class="col">
         <div align="right">
           {% if context.has_next %}
-            <a href="/disparu/candidates?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
+            <a href="{{ url_for('disparu_candidates') }}?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
           {% else %}
             <a href="#" class="btn btn-outline-secondary disabled">Next</a>
           {% endif %}
@@ -178,7 +178,7 @@
 						<b>Elongation:</b> {{"%.2f"|format(context.results[ix].elongation)}}<br>
 						<b>diff2sciflux:</b> {{"%.2f"|format(context.results[ix].diff2sciflux)}}<br>
 						<br>
-			  	      	<form method="GET" action="/disparu/candidates/save/{{context.results[ix].id}}">
+			  	      	<form method="GET" action="{{ url_for('disparu_candidates_save', id=context.results[ix].id) }}">
 				       	  <div class="form-row">
 							<label for="source_type"><b>Type:</b></label>
 							<select id="source_type" name="source_type" class="form-control form-control-sm" value="{{context.s_types[ix]}}">
@@ -202,7 +202,7 @@
       <div class="col">
         <div align="left">
           {% if context.has_prev %}
-            <a href="/disparu/candidates?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
+            <a href="{{ url_for('disparu_candidates') }}?{{ arg_str }}&page={{ page - 1 }}" class="btn btn-outline-secondary">Prev</a>
           {% else %}
             <a href="#" class="btn btn-outline-secondary disabled">Prev</a>
           {% endif %}
@@ -216,7 +216,7 @@
       <div class="col">
         <div align="right">
           {% if context.has_next %}
-            <a href="/disparu/candidates?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
+            <a href="{{ url_for('disparu_candidates') }}?{{ arg_str }}&page={{ page + 1 }}" class="btn btn-outline-secondary">Next</a>
           {% else %}
             <a href="#" class="btn btn-outline-secondary disabled">Next</a>
           {% endif %}

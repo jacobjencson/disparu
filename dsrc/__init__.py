@@ -151,20 +151,21 @@ class Logger(object):
                     'level': self.__level,
                     'maxBytes': DISPARU_LOG_MAX_BYTES
                 },
-                'utils': {
-                    'backupCount': 10,
-                    'class': 'logging.handlers.RotatingFileHandler',
-                    'formatter': 'ObsFileFormatter',
-                    'filename': self.__logconsole,
-                    'level': self.__level,
-                    'maxBytes': DISPARU_LOG_MAX_BYTES
-                }
+                #'utils': {
+                #    'backupCount': 10,
+                #    'class': 'logging.handlers.RotatingFileHandler',
+                #    'formatter': 'ObsFileFormatter',
+                #    'filename': self.__logconsole,
+                #    'level': self.__level,
+                #    'maxBytes': DISPARU_LOG_MAX_BYTES
+                #}
             },
 
             # make this logger use file and console handlers
             'loggers': {
                 self.__name: {
-                    'handlers': ['colored', 'file', 'utils'],
+                    # 'handlers': ['colored', 'file', 'utils'],
+                    'handlers': ['colored', 'file'],
                     'level': self.__level,
                     'propagate': True
                 }
