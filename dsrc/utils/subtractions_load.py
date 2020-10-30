@@ -35,6 +35,8 @@ DISPARU_DB_USER = os.getenv('DISPARU_DB_USER', None)
 DISPARU_DB_PASS = os.getenv('DISPARU_DB_PASS', None)
 DISPARU_DB_NAME = os.getenv('DISPARU_DB_NAME', None)
 DISPARU_DB_PORT = os.getenv('DISPARU_DB_PORT', None)
+DISPARU_DATA = os.getenv('DISPARU_DATA', None)
+
 
 # +
 # function: subtractions_load()
@@ -50,25 +52,26 @@ def subtractions_load(_file=''):
     """
     
     # check input(s)
-    _file = os.path.abspath(os.path.expanduser(_file))
+    _file = os.path.abspath(os.path.expanduser(os.path.expandvars(_file)))
     if not isinstance(_file, str) or not os.path.exists(_file):
         raise Exception(f'invalid input, _file={_file}')
     
     #get basic image info
-    _base_dir = os.path.dirname(_file)
+    _base_dir = os.path.dirname(_file).replace(DISPARU_DATA, '$DISPARU_DATA')
     _filename = os.path.basename(_file)
+    _arcnum = _filename.split('arc')[1].split('_')[0]
     _galaxy_name = _base_dir.split('/')[-3]
     _inst = _base_dir.split('/')[-2]
     _version = _base_dir.split('/')[-1]
     
     #get ref image and obs image, and load into databse if they aren't already. 
-    _record_file = os.path.join(_base_dir, 'subtraction_record.txt')
+    _record_file = os.path.expandvars(os.path.join(_base_dir, f'arc{_arcnum}_subtraction_record.txt'))
     _ref_file, _obs_file = read_subtraction_record(_record_file)
-    _ref_base_dir = os.path.dirname(_ref_file)
+    _ref_base_dir = os.path.dirname(_ref_file).replace(DISPARU_DATA, '$DISPARU_DATA')
     _ref_filename = os.path.basename(_ref_file)
-    _obs_base_dir = os.path.dirname(_obs_file)
+    _obs_base_dir = os.path.dirname(_obs_file).replace(DISPARU_DATA, '$DISPARU_DATA')
     _obs_filename = os.path.basename(_obs_file)
-    
+
     try:
         print(f"Loading reference image {_ref_file} into database.")
         refs_load(_ref_file)
@@ -108,7 +111,7 @@ def subtractions_load(_file=''):
     _ref_id = session.query(refsRecord).filter(refsRecord.filename == _ref_filename,
                                                refsRecord.base_dir == _ref_base_dir).first().id
     _obs_id = session.query(observationsRecord).filter(observationsRecord.filename == _obs_filename,
-                                              observationsRecord.base_dir == _obs_base_dir).first().id
+                                                       observationsRecord.base_dir == _obs_base_dir).first().id
                                               
     #check if entry already exists, if so skip. 
     _check_q = session.query(subtractionsRecord).filter(subtractionsRecord.galaxy_id == _galaxy_id, 
@@ -141,7 +144,7 @@ def subtractions_load(_file=''):
         except Exception as e:
             session.rollback()
             raise Exception(f"Failed to insert {_galaxy_name} subtraction image {_filename} {_version} into database, error={e}")
-            
+
 # +
 # function: read_subtraction_record()
 # -
@@ -159,10 +162,10 @@ def read_subtraction_record(_record_file):
     
     _record_f = open(_record_file, 'r')
     _record_lines = _record_f.readlines()
-    
-    _ref_file = _record_lines[4].split(':')[-1].strip()
-    _obs_file = _record_lines[5].split(':')[-1].strip()
-    
+
+    _ref_file = os.path.expandvars(_record_lines[4].split(':')[-1].strip())
+    _obs_file = os.path.expandvars(_record_lines[5].split(':')[-1].strip())
+
     return(_ref_file, _obs_file)
     
 

@@ -8,6 +8,8 @@ dsrc/forms/__pycache__/*
 dsrc/__pycache__/*
 dsrc/models/__pycache__/*
 dsrc/utils/__pycache__/*
+Disparu.log
+log/*
 
 # secret stuff
 bin/docker.sh
