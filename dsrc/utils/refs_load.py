@@ -31,6 +31,7 @@ DISPARU_DB_USER = os.getenv('DISPARU_DB_USER', None)
 DISPARU_DB_PASS = os.getenv('DISPARU_DB_PASS', None)
 DISPARU_DB_NAME = os.getenv('DISPARU_DB_NAME', None)
 DISPARU_DB_PORT = os.getenv('DISPARU_DB_PORT', None)
+DISPARU_DATA = os.getenv('DISPARU_DATA', None)
 
 # +
 # function: galaxies_read()
@@ -47,14 +48,14 @@ def refs_load(_file=''):
     """
     
     # check input(s)
-    _file = os.path.abspath(os.path.expanduser(_file))
+    _file = os.path.abspath(os.path.expanduser(os.path.expandvars(_file)))
     if not isinstance(_file, str) or not os.path.exists(_file):
         raise Exception(f'invalid input, _file={_file}')
     
     # get ref image info
     _record = ACS_utils().get_ACS_img_info(_file)
     _galaxy_name = _record['targname'].split('_')[0]
-    _base_dir = os.path.dirname(_file)
+    _base_dir = os.path.dirname(_file).replace(DISPARU_DATA, '$DISPARU_DATA') #put the env variable back in
     _filename = os.path.basename(_file)
     _version = _base_dir.split('/')[-1]
     _filter = ACS_utils.get_ACS_filter_name(_record['filter1'], _record['filter2'])
@@ -76,7 +77,8 @@ def refs_load(_file=''):
     #check if entry already exists, if so skip. 
     _check_q = session.query(refsRecord).filter(refsRecord.galaxy_id == _galaxy_id, 
                                                 refsRecord.version == _version,
-                                                refsRecord.filename == _filename)
+                                                refsRecord.filename == _filename,
+                                                refsRecord.base_dir == _base_dir)
     if session.query(_check_q.exists()).scalar():
         print(f"Entry for {_galaxy_name} reference image {_version} already exists. Skipping.")
     else:

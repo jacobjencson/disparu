@@ -57,6 +57,8 @@ DISPARU_DB_USER = os.getenv('DISPARU_DB_USER', None)
 DISPARU_DB_PASS = os.getenv('DISPARU_DB_PASS', None)
 DISPARU_DB_NAME = os.getenv('DISPARU_DB_NAME', None)
 DISPARU_DB_PORT = os.getenv('DISPARU_DB_PORT', None)
+DISPARU_SRC = os.getenv('DISPARU_SRC', None)
+DISPARU_DATA = os.getenv('DISPARU_DATA', None)
 
 # +
 # function: subtractions_load()
@@ -73,18 +75,20 @@ def candidates_load(_file='', _ispos=True):
     """
     
     # check input(s)
-    _file = os.path.abspath(os.path.expanduser(_file))
+    _file = os.path.abspath(os.path.expanduser(os.path.expandvars(_file)))
     if not isinstance(_file, str) or not os.path.exists(_file):
         raise Exception(f'invalid input, _file={_file}')
     
     #get basic image info
-    _base_dir = os.path.dirname(_file)
+    _base_dir = os.path.dirname(_file).replace(DISPARU_DATA, '$DISPARU_DATA')
     _filename = os.path.basename(_file)
     _diff_filename = _filename.replace('_cand.cat', '.fits')
     _sub_filename = _filename.replace('_cand.cat', '.fits').replace('_negsub', '')
     _galaxy_name = _base_dir.split('/')[-3]
     #_inst = _base_dir.split('/')[-2]
     _version = _base_dir.split('/')[-1]
+    _arcnum = _filename.split('arc')[1].split('_')[0]
+    print(_arcnum)
     
     # read contents of candidates catalog
     with open(os.path.abspath(os.path.expanduser(_file)), 'r') as _fd:
@@ -124,8 +128,8 @@ def candidates_load(_file='', _ispos=True):
                                                        subtractionsRecord.version == _version).first().id                                    
     #check if candidates have already been entered for this sub. 
     _check_q = session.query(candidatesRecord).filter(candidatesRecord.galaxy_id == _galaxy_id, 
-                                                       candidatesRecord.sub_id == _sub_id,
-                                                       candidatesRecord.ispos == _ispos)
+                                                      candidatesRecord.sub_id == _sub_id,
+                                                      candidatesRecord.ispos == _ispos)
     if session.query(_check_q.exists()).scalar():
         print(f"Entries for candidate catalog {_filename} {_version} already exist. Skipping.")
     else:
@@ -168,7 +172,7 @@ def candidates_load(_file='', _ispos=True):
         
     #make thumbnails
     #_thumb_path = os.path.join(_base_dir, 'candidate_thumbnails')
-    _thumb_path = '/var/www/disparu/dsrc/static/img/thumbnails'
+    _thumb_path = os.path.expandvars(os.path.join(DISPARU_SRC, 'static/img/thumbnails'))
     if not os.path.isdir(_thumb_path):
         os.makedirs(_thumb_path)
         
@@ -176,9 +180,9 @@ def candidates_load(_file='', _ispos=True):
     _these_candidates = session.query(candidatesRecord).filter(candidatesRecord.sub_id == _sub_id,
                                                                candidatesRecord.ispos == _ispos)
         
-    _sci_file = os.path.join(_base_dir, _sub_filename.replace('_D', ''))
-    _ref_file = glob.glob(os.path.join(_base_dir, '*ref_drc_sci_eps.fits'))[0]
-    _diff_file = os.path.join(_base_dir, _diff_filename)
+    _sci_file = os.path.expandvars(os.path.join(_base_dir, _sub_filename.replace('_D', '')))
+    _ref_file = glob.glob(os.path.expandvars(os.path.join(_base_dir, f'*ref_drc_sci_eps_arc{_arcnum}.fits')))[0]
+    _diff_file = os.path.expandvars(os.path.join(_base_dir, _diff_filename))
     
     print(_sci_file)
                                                            

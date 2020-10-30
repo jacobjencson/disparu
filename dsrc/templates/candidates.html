@@ -88,10 +88,12 @@
 	            <option value="id"           {% if request.args.sort_value=='id' %}           selected {% endif %}>Candidate ID</option>
 	            <option value="ra"           {% if request.args.sort_value=='ra' %}           selected {% endif %}>RA (J2k&deg;)</option>
 	            <option value="dec"          {% if request.args.sort_value=='dec' %}          selected {% endif %}>Dec (J2k&deg;)</option>
-				<option value="snr"          {% if request.args.sort_value=='snr' %}          selected {% endif %}>S/N</option>
-				<option value="scorr_peak"   {% if request.args.sort_value=='scorr_peak' %}   selected {% endif %}>scorr_peak</option>
-				<option value="diff2sciflux" {% if request.args.sort_value=='diff2sciflux' %} selected {% endif %}>diff2sciflux</option>
-	          </select>
+		    <option value="snr"          {% if request.args.sort_value=='snr' %}          selected {% endif %}>S/N</option>
+		    <option value="scorr_peak"   {% if request.args.sort_value=='scorr_peak' %}   selected {% endif %}>scorr_peak</option>
+		    <option value="flux_aper"    {% if request.args.sort_value=='flux_aper' %}    selected {% endif %}>flux_aper</option>
+		    <option value="mag_aper"     {% if request.args.sort_value=='mag_aper' %}     selected {% endif %}>mag_aper</option>
+	            <option value="diff2sciflux" {% if request.args.sort_value=='diff2sciflux' %} selected {% endif %}>diff2sciflux</option>
+		  </select>
 			  <select id="sort_order" name="sort_order" class="form-control form-control-sm" value="{{ request.args.sort_order }}">
 				<option value="ascending"  {% if request.args.sort_order=='ascending' %}  selected {% endif %}>Ascending</option>
 	            <option value="descending" {% if request.args.sort_order=='descending' %} selected {% endif %}>Descending</option>
@@ -176,6 +178,8 @@
 						<b>scorr_peak:</b> {{"%.2f"|format(context.results[ix].scorr_peak)}}<br>
 						<b>FWHM:</b> {{"%.2f"|format(context.results[ix].fwhm_image)}}<br>
 						<b>Elongation:</b> {{"%.2f"|format(context.results[ix].elongation)}}<br>
+						<b>Aperture Flux:</b> {{"%.2f"|format(context.results[ix].flux_aper)}}<br>
+						<b>Aperture Mag:</b> {{"%.2f"|format(context.results[ix].mag_aper)}}<br>
 						<b>diff2sciflux:</b> {{"%.2f"|format(context.results[ix].diff2sciflux)}}<br>
 						<br>
 			  	      	<form method="GET" action="{{ url_for('disparu_candidates_save', id=context.results[ix].id) }}">

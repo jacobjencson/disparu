@@ -52,8 +52,8 @@ export DISPARU_SRC=${DISPARU_HOME}/dsrc
 # +
 # data path(s)
 # -
-export DISPARU_DATA=/dataraid6/disparu:/dataraid0/disparu
-
+#export DISPARU_DATA=/dataraid6/disparu:/dataraid0/disparu
+export DISPARU_DATA=/dataraid6/disparu
 
 # +
 # PYTHONPATH

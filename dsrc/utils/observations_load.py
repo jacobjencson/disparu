@@ -31,6 +31,7 @@ DISPARU_DB_USER = os.getenv('DISPARU_DB_USER', None)
 DISPARU_DB_PASS = os.getenv('DISPARU_DB_PASS', None)
 DISPARU_DB_NAME = os.getenv('DISPARU_DB_NAME', None)
 DISPARU_DB_PORT = os.getenv('DISPARU_DB_PORT', None)
+DISPARU_DATA = os.getenv('DISPARU_DATA', None)
 
 # +
 # function: galaxies_read()
@@ -47,12 +48,12 @@ def observations_load(_file=''):
     """
     
     # check input(s)
-    _file = os.path.abspath(os.path.expanduser(_file))
+    _file = os.path.abspath(os.path.expanduser(os.path.expandvars(_file)))
     if not isinstance(_file, str) or not os.path.exists(_file):
         raise Exception(f'invalid input, _file={_file}')
     
     #get basic image info
-    _base_dir = os.path.dirname(_file)
+    _base_dir = os.path.dirname(_file).replace(DISPARU_DATA, '$DISPARU_DATA')
     _filename = os.path.basename(_file)
     _galaxy_name = _base_dir.split('/')[-3]
     _inst = _base_dir.split('/')[-2]
@@ -82,7 +83,8 @@ def observations_load(_file=''):
     #check if entry already exists, if so skip. 
     _check_q = session.query(observationsRecord).filter(observationsRecord.galaxy_id == _galaxy_id, 
                              observationsRecord.version == _version,
-                             observationsRecord.filename == _filename)
+                             observationsRecord.filename == _filename,
+                             observationsRecord.base_dir == _base_dir)
     if session.query(_check_q.exists()).scalar():
         print(f"Entry for {_galaxy_name} observation {_filename} {_version} already exists. Skipping.")
     else:
