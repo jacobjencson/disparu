@@ -20,7 +20,7 @@ from flask import request
 from flask import jsonify
 from flask import send_file
 from flask import send_from_directory
-from sqlalchemy import desc
+from sqlalchemy import desc, distinct
 from urllib.parse import urlencode
 
 from dsrc.models.disparu import db as db_disparu
@@ -132,22 +132,29 @@ def disparu_candidates():
     # GET request
     if request.method == 'GET':
         #need a list of all galaxies
-        all_galaxies = db_disparu.session.query(galaxiesRecord).order_by(galaxiesRecord.name)
-        _all_galaxies_results = galaxiesRecord.serialize_list(all_galaxies)
+        all_galaxies = db_disparu.session.query(galaxiesRecord,candidatesRecord.galaxy_id).filter(candidatesRecord.galaxy_id==galaxiesRecord.id).\
+                                          distinct().order_by(galaxiesRecord.name)
+        _all_galaxies_results = galaxiesRecord.serialize_list([row[0] for row in all_galaxies.all()])
         
         #get subtraction dates
-        gal_subs = db_disparu.session.query(subtractionsRecord, galaxiesRecord).filter(subtractionsRecord.galaxy_id==galaxiesRecord.id).order_by(subtractionsRecord.mjdstart).distinct(subtractionsRecord.mjdstart)
+        gal_subs = db_disparu.session.query(subtractionsRecord, galaxiesRecord).filter(subtractionsRecord.galaxy_id==galaxiesRecord.id).\
+                   order_by(subtractionsRecord.mjdstart).distinct(subtractionsRecord.mjdstart)
         gal_subs = galaxies_filters(gal_subs, _args)
+        #gal_subs = subtractions_filters(gal_subs, _args)
         _gal_subs_results = subtractionsRecord.serialize_list([row[0] for row in gal_subs.all()])
         _gal_sub_dates = [Time(_this_sub_dict['mjdstart'], format='mjd').fits[:10].replace('-','') for _this_sub_dict in _gal_subs_results]
-        
-        sub_versions = db_disparu.session.query(subtractionsRecord, galaxiesRecord).filter(subtractionsRecord.galaxy_id==galaxiesRecord.id).order_by(desc(subtractionsRecord.version))
+
+        sub_versions = db_disparu.session.query(subtractionsRecord, galaxiesRecord).filter(subtractionsRecord.galaxy_id==galaxiesRecord.id).\
+                       order_by(desc(subtractionsRecord.version))
         sub_versions = galaxies_filters(sub_versions, _args)
+        sub_versions = subtractions_filters(sub_versions, _args)
         _sub_versions_results = subtractionsRecord.serialize_list([row[0] for row in sub_versions.all()])
         
+
         #query all the tables, I think this is ok. 
-        query = db_disparu.session.query(candidatesRecord, subtractionsRecord, galaxiesRecord).filter(candidatesRecord.sub_id == subtractionsRecord.id, 
-                                                                                                      candidatesRecord.galaxy_id == galaxiesRecord.id)
+        query = db_disparu.session.query(candidatesRecord, subtractionsRecord, galaxiesRecord).\
+                                   filter(candidatesRecord.sub_id == subtractionsRecord.id, 
+                                          candidatesRecord.galaxy_id == galaxiesRecord.id)
         query = galaxies_filters(query, _args)
         query = subtractions_filters(query, _args)
         query = candidates_filters(query, _args)
@@ -339,6 +346,10 @@ def disparu_galaxies():
 @app.route('/sources/', methods=["GET", "POST"])
 def disparu_sources():
     logger.debug(f'route /sources entry')
+
+    #_all_galaxies = db_disparu.session.query(galaxiesRecord,candidatesRecord.galaxy_id).filter(candidatesRecord.galaxy_id==galaxiesRecord.id).\
+    #                                      distinct().order_by(galaxiesRecord.name)
+
     return render_template('generic.html', page='/sources')
 
 

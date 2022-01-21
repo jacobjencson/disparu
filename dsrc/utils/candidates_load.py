@@ -17,6 +17,7 @@ import math
 import os
 import sys
 import glob
+import subprocess
 import numpy as np
 from astropy.io import fits
 import matplotlib.pyplot as plt
@@ -59,6 +60,7 @@ DISPARU_DB_NAME = os.getenv('DISPARU_DB_NAME', None)
 DISPARU_DB_PORT = os.getenv('DISPARU_DB_PORT', None)
 DISPARU_SRC = os.getenv('DISPARU_SRC', None)
 DISPARU_DATA = os.getenv('DISPARU_DATA', None)
+DISPARU_PUBLIC_SRC = os.getenv('DISPARU_PUBLIC_SRC', None)
 
 # +
 # function: subtractions_load()
@@ -283,6 +285,7 @@ if __name__ == '__main__':
                                  formatter_class=argparse.RawTextHelpFormatter)
     _p.add_argument('-f', '--file', default=CANDIDATES_CATALOG_FILE, help="""Input file [%(default)s]""")
     _p.add_argument('--ispos', default='True', help=""" [%(default)s]""")
+    _p.add_argument('--copy', default='True', help=""" [%(default)s]""")
     args = _p.parse_args()
     
     _ispos = str2bool(args.ispos)

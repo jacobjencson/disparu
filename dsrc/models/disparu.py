@@ -543,6 +543,10 @@ def candidates_filters(query, request_args):
         except Exception:
             pass
     
+    #return records with number of matches from other subtractions >= value (API: ?num_matches__gte=1)
+    #if request_args.get('num_matches'):
+
+    
     # return records with class_star >= value (API: ?class_star__gte=0.5)
     if request_args.get('class_star__gte'):
         query = query.filter(candidatesRecord.class_star >= float(request_args['class_star__gte']))

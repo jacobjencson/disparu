@@ -48,12 +48,14 @@ export DISPARU_ETC=${DISPARU_HOME}/etc
 export DISPARU_LOGS=${DISPARU_HOME}/logs
 export DISPARU_SRC=${DISPARU_HOME}/dsrc
 
-
 # +
 # data path(s)
 # -
 #export DISPARU_DATA=/dataraid6/disparu:/dataraid0/disparu
-export DISPARU_DATA=/dataraid6/disparu
+#export DISPARU_DATA=/dataraid6/disparu
+#export DISPARU_DATA=/dataraid0/disparu 
+
+export DISPARU_DATA=/opt/pgdata/files
 
 # +
 # PYTHONPATH

@@ -22,7 +22,8 @@
 	        <div class="form-row">
 				<label for="gal_name">Galaxy:</label>
 				<select id="gal_name" name="gal_name" class="form-control form-control-sm" value="{{ request.args.gal_name }}">
-	              {% for ix in range(context.all_galaxies|count) %}
+	                            <option value=""></option>	
+		      {% for ix in range(context.all_galaxies|count) %}
 				    <option value= {{"%s"|format(context.all_galaxies[ix].name)}} {% if request.args.gal_name==context.all_galaxies[ix].name %} selected {% endif %}>{{"%s"|format(context.all_galaxies[ix].name)}}</option>
 				  {% endfor %}
 				</select>
@@ -31,8 +32,9 @@
 	        <div class="form-row">
 				<label for="sub_obs_dates">Obs. date:</label>
 				<select id="sub_obs_dates" name="sub_obs_dates" class="form-control form-control-sm" value="{{ request.args.sub_obs_dates }}">
+				    <option value=""></option>	
 	              {% for ix in range(context.gal_sub_dates|count) %}
-				    <option value= {{"%s"|format(context.gal_sub_dates[ix])}} {% if request.args.sub_obs_date==context.gal_sub_dates[ix] %} selected {% endif %}>{{"%s"|format(context.gal_sub_dates[ix])}}</option>
+				    <option value= {{"%s"|format(context.gal_sub_dates[ix])}} {% if request.args.sub_obs_dates==context.gal_sub_dates[ix] %} selected {% endif %}>{{"%s"|format(context.gal_sub_dates[ix])}}</option>
 				  {% endfor %}
 				</select>
 	        </div>
@@ -40,8 +42,9 @@
 	        <div class="form-row">
 				<label for="sub_obs_dates">Sub. version:</label>
 				<select id="sub_version" name="sub_version" class="form-control form-control-sm" value="{{ request.args.sub_version }}">
-	              {% for ix in range(context.sub_versions|count) %}
-				    <option value= {{"%s"|format(context.sub_versions[ix].version)}} {% if request.args.sub_obs_date==context.sub_versions[ix].version %} selected {% endif %}>{{"%s"|format(context.sub_versions[ix].version)}}</option>
+                                    <option value=""></option>		              
+		      {% for ix in range(context.sub_versions|count) %}
+				    <option value= {{"%s"|format(context.sub_versions[ix].version)}} {% if request.args.sub_version==context.sub_versions[ix].version %} selected {% endif %}>{{"%s"|format(context.sub_versions[ix].version)}}</option>
 				  {% endfor %}
 				</select>
 	        </div>

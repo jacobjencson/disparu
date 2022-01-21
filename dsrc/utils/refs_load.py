@@ -54,7 +54,7 @@ def refs_load(_file=''):
     
     # get ref image info
     _record = ACS_utils().get_ACS_img_info(_file)
-    _galaxy_name = _record['targname'].split('_')[0]
+    _galaxy_name = _record['targname'].split('_')[0].split('POS')[0]
     _base_dir = os.path.dirname(_file).replace(DISPARU_DATA, '$DISPARU_DATA') #put the env variable back in
     _filename = os.path.basename(_file)
     _version = _base_dir.split('/')[-1]
